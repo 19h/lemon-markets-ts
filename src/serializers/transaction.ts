@@ -31,11 +31,10 @@ export const transactionSerializer =
         related_order: transactionRelatedOrderSerializer,
     });
 
-export type Transaction = t.TypeOf<typeof transactionSerializer>;
-
 export type TransactionListRequest = t.TypeOf<typeof transactionListRequestSerializer>;
 
-export type TransactionResponse = t.TypeOf<typeof transactionSerializer>;
+export type Transaction = t.TypeOf<typeof transactionSerializer>;
+export type TransactionResponse = Transaction;
 
 export const paginatedOrderResponseSerializer =
     buildPaginationCodec(

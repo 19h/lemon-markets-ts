@@ -2,7 +2,7 @@ import * as t from 'io-ts';
 import { buildPaginationCodec, buildRetCodec, optionalNumberCodec } from './sharedSerializers';
 import { instrumentSerializer } from './instrument';
 
-export const portfolioListRequestSerializer =
+export const portfolioPositionListRequestSerializer =
     buildRetCodec({
         offset: optionalNumberCodec,
         limit: optionalNumberCodec,
@@ -21,7 +21,10 @@ export const portfolioPositionSerializer =
 export const portfolioPositionListSerializer =
     t.readonlyArray(portfolioPositionSerializer);
 
+export type PortfolioPositionRequest = t.TypeOf<typeof portfolioPositionListRequestSerializer>;
+
 export type PortfolioPosition = t.TypeOf<typeof portfolioPositionSerializer>;
+export type PortfolioPositionResponse = PortfolioPosition;
 
 export type PortfolioListAggregateResponse = t.TypeOf<typeof portfolioPositionListSerializer>;
 
