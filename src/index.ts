@@ -8,7 +8,7 @@ import {
     accountStateResponseSerializer,
     paginatedAccountResponseSerializer,
 } from './serializers/account';
-import { PathReporter } from 'io-ts/PathReporter';
+//import { PathReporter } from 'io-ts/PathReporter';
 import {
     paginatedTransactionsSerializer,
     TransactionListRequest,
@@ -80,10 +80,11 @@ const checked_request = async <DRes, DReq extends BasePayload = null>(
             (res.json() as Promise<DRes>)
                 .then(val =>
                     (
-                        console.log(val, PathReporter.report(responseSerializer.decode(val))),
+                        //console.log(val, PathReporter.report(responseSerializer.decode(val))),
                         result_from_either(
-                        responseSerializer.decode(val),
-                    ).unwrap()),
+                            responseSerializer.decode(val),
+                        ).unwrap()
+                    ),
                 ),
         )
         .unwrap();

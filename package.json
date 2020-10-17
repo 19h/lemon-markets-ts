@@ -1,10 +1,13 @@
 {
-  "name": "lemon-markets-ts",
+  "name": "lemon-markets",
   "version": "1.0.0",
   "main": "dist/src/index.js",
   "repository": "git@github.com:19h/lemon-markets-ts.git",
   "author": "19h <kenan@sig.dev>",
   "license": "MIT",
+  "scripts": {
+    "build": "tsc"
+  },
   "devDependencies": {
     "@types/node-fetch": "^2.5.7",
     "typescript": "^4.0.3"
