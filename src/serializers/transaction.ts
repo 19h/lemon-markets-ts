@@ -1,5 +1,6 @@
 import * as t from 'io-ts';
 import {
+    buildOptionalResCodec,
     buildPaginationCodec,
     buildRetCodec,
     optionalNumberCodec,
@@ -28,7 +29,7 @@ export const transactionSerializer =
         amount: t.number,
         date: t.number,
 
-        related_order: transactionRelatedOrderSerializer,
+        related_order: buildOptionalResCodec(transactionRelatedOrderSerializer),
     });
 
 export type TransactionListRequest = t.TypeOf<typeof transactionListRequestSerializer>;
@@ -36,9 +37,9 @@ export type TransactionListRequest = t.TypeOf<typeof transactionListRequestSeria
 export type Transaction = t.TypeOf<typeof transactionSerializer>;
 export type TransactionResponse = Transaction;
 
-export const paginatedOrderResponseSerializer =
+export const paginatedTransactionsSerializer =
     buildPaginationCodec(
         transactionSerializer,
     );
 
-export type PaginatedTransactionResponse = t.TypeOf<typeof paginatedOrderResponseSerializer>;
+export type PaginatedTransactionResponse = t.TypeOf<typeof paginatedTransactionsSerializer>;

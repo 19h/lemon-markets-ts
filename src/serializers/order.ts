@@ -1,6 +1,6 @@
 import * as t from 'io-ts';
 import {
-    buildOptionalCodec,
+    buildOptionalReqCodec,
     buildPaginationCodec,
     buildRetCodec,
     nullableNumberCodec,
@@ -48,9 +48,9 @@ export const orderCreateRequestSerializer =
 
 export const orderListRequestSerializer =
     buildRetCodec({
-        side: buildOptionalCodec(orderSideSerializer),
-        status: buildOptionalCodec(orderStateSerializer),
-        execution_type: buildOptionalCodec(orderExecutionTypeSerializer),
+        side: buildOptionalReqCodec(orderSideSerializer),
+        status: buildOptionalReqCodec(orderStateSerializer),
+        execution_type: buildOptionalReqCodec(orderExecutionTypeSerializer),
 
         limit: optionalNumberCodec,
         offset: optionalNumberCodec,

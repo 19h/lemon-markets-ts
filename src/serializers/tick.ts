@@ -1,6 +1,5 @@
 import * as t from 'io-ts';
-import { buildOptionalCodec, buildPaginationCodec, buildRetCodec, optionalNumberCodec } from './sharedSerializers';
-import { instrumentSerializer } from './instrument';
+import { buildOptionalReqCodec, buildPaginationCodec, buildRetCodec, optionalNumberCodec } from './sharedSerializers';
 
 const tickOrdering = [
     t.literal('date'),
@@ -14,7 +13,7 @@ export const tickListRequestSerializer =
         offset: optionalNumberCodec,
         limit: optionalNumberCodec,
 
-        ordering: buildOptionalCodec(tickOrderingSerializer),
+        ordering: buildOptionalReqCodec(tickOrderingSerializer),
 
         date_until: optionalNumberCodec,
         date_from: optionalNumberCodec,
@@ -28,6 +27,8 @@ export const tickSerializer =
 
 export type Tick = t.TypeOf<typeof tickSerializer>;
 export type TickResponse = Tick;
+
+export type TickListRequest = t.TypeOf<typeof tickListRequestSerializer>;
 
 export const paginatedTickResponseSerializer =
     buildPaginationCodec(

@@ -1,5 +1,5 @@
 import * as t from 'io-ts';
-import { buildOptionalCodec, buildPaginationCodec, buildRetCodec, optionalNumberCodec } from './sharedSerializers';
+import { buildOptionalReqCodec, buildPaginationCodec, buildRetCodec, optionalNumberCodec } from './sharedSerializers';
 import { orderingSerializer } from './ordering';
 
 export const ohlcListRequestSerializer =
@@ -7,7 +7,7 @@ export const ohlcListRequestSerializer =
         offset: optionalNumberCodec,
         limit: optionalNumberCodec,
 
-        ordering: buildOptionalCodec(orderingSerializer),
+        ordering: buildOptionalReqCodec(orderingSerializer),
 
         date_until: optionalNumberCodec,
         date_from: optionalNumberCodec,
@@ -26,6 +26,8 @@ export const ohlcSerializer =
 
 export type Ohlc = t.TypeOf<typeof ohlcSerializer>;
 export type OhlcResponse = Ohlc;
+
+export type OhlcListRequest = t.TypeOf<typeof ohlcListRequestSerializer>;
 
 export const paginatedOhlcResponseSerializer =
     buildPaginationCodec(

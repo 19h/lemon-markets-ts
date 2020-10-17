@@ -117,7 +117,7 @@ export class ResultErr<T, E> {
     }
 
     unwrap(): never {
-        throw new Error('Called Result.unwrap() on an Err value.');
+        throw new Error('Called Result.unwrap() on an Err value: ' + this.value);
     }
 }
 
@@ -129,7 +129,7 @@ export const Err = <E, >(val: E) => {
     return new ResultErr<never, E>(val);
 };
 
-export const IntoResult = <T, E>(val: Either<E, T>): Result<T, E> => {
+export const result_from_either = <T, E>(val: Either<E, T>): Result<T, E> => {
     if (val._tag === 'Right') {
         return new ResultOk<T, never>(val.right);
     }
@@ -139,4 +139,12 @@ export const IntoResult = <T, E>(val: Either<E, T>): Result<T, E> => {
     }
 
     return null as never;
+};
+
+export const result_from_promise = async <T, E=any>(val: Promise<T>): Promise<Result<T, E>> => {
+    try {
+        return new ResultOk<T, never>(await val);
+    } catch (err) {
+        return new ResultErr<never, E>(err);
+    }
 };

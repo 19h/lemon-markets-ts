@@ -12,13 +12,16 @@ export const nullableNumberCodec = t.union([ t.number, t.null ]);
 export const optionalNumberCodec = t.union([ t.number, t.undefined ]);
 export const optionalStringCodec = t.union([ t.number, t.undefined ]);
 
-export const buildOptionalCodec = <T extends t.Mixed>(props: T) =>
+export const buildOptionalReqCodec = <T extends t.Mixed>(props: T) =>
     t.union([ props, t.undefined ]);
+
+export const buildOptionalResCodec = <T extends t.Mixed>(props: T) =>
+    t.union([ props, t.null ]);
 
 export const buildPaginationCodec = <T extends t.Mixed>(props: T) =>
     buildRetCodec({
         count: t.number,
-        prev: nullableStringCodec,
+        previous: nullableStringCodec,
         next: nullableStringCodec,
         results: t.readonlyArray(props),
     });
