@@ -21,30 +21,38 @@ $ yarn add lemon-markets
 #### Example usage
 
 ```typescript
-const lm = new LemonMarkets(
-    '654c8cf10500f7814f7ce5ef6cdcd8ee8c79006e',
-    '48bd9fc4-7bad-45e5-e492-7d2074cd0001',
+import { LemonMarkets } from 'lemon-markets';
+
+/* REST API */
+
+const lemon = new LemonMarkets(
+    '654c8cf10500f7814f7ce5ef6cdcd8ee8c79006e', // api token
+    '48bd9fc4-7bad-45e5-e492-7d2074cd0001',     // account id, optional
 );
 
-await lm.list_accounts();
-await lm.get_account();
-await lm.get_account_state();
+await lemon.list_accounts();
+await lemon.get_account();
+await lemon.get_account_state();
 
-await lm.list_transactions();
-await lm.get_transaction('22eac2b1-def1-cd5a-b445-cf3a9dae6e1b');
+await lemon.list_transactions();
+await lemon.get_transaction('22eac2b1-def1-cd5a-b445-cf3a9dae6e1b');
 
-await lm.list_positions_separate();
-await lm.list_positions_aggregated();
-await lm.get_position_by_isin('DE0007100000');
+await lemon.list_positions_separate();
+await lemon.list_positions_aggregated();
+await lemon.get_position_by_isin('DE0007100000');
 
-await lm.list_ticks('DE0007100000');
-await lm.list_ticks('DE0007100000', {
+await lemon.list_ticks('DE0007100000');
+await lemon.list_ticks('DE0007100000', {
     offset: 10,
     limit: 1,
 });
 
-await lm.list_ohlc_m1('DE0007100000');
-await lm.get_last_ohlc_m1('DE0007100000');
+await lemon.list_ohlc_m1('DE0007100000');
+await lemon.get_last_ohlc_m1('DE0007100000');
+
+/* WEBSOCKET API */
+
+// come back later today
 ```
 
 #### License

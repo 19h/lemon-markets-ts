@@ -1,6 +1,6 @@
 {
   "name": "lemon-markets",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/src/index.js",
   "repository": "git@github.com:19h/lemon-markets-ts.git",
   "author": "19h <kenan@sig.dev>",
