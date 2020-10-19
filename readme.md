@@ -52,7 +52,30 @@ await lemon.get_last_ohlc_m1('DE0007100000');
 
 /* WEBSOCKET API */
 
-// come back later today
+const ls = new LemonMarketsStream();
+
+ls.subscribe({
+    type: 'trades',
+    specifier: 'with-quantity-with-uncovered',
+    value: 'US88160R1014',
+});
+
+ls.subscribe({
+    type: 'trades',
+    specifier: 'with-quantity',
+    value: 'NO0010196140',
+});
+
+ls.on(
+    'tick',
+    tick =>
+        console.log(
+            '[%s] %s bought at %s',
+            tick.isin,
+            tick.quantity,
+            tick.price,
+        ),
+);
 ```
 
 #### License

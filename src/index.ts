@@ -12,11 +12,13 @@ import {
 import {
     paginatedTransactionsSerializer,
     TransactionListRequest,
-    transactionListRequestSerializer, transactionSerializer,
+    transactionListRequestSerializer,
+    transactionSerializer,
 } from './serializers/transaction';
 import {
     paginatedPortfolioPositionsResponseSerializer,
-    portfolioPositionListRequestSerializer, portfolioPositionListSerializer,
+    portfolioPositionListRequestSerializer,
+    portfolioPositionListSerializer,
     PortfolioPositionRequest,
 } from './serializers/portfolio';
 import {
@@ -31,6 +33,9 @@ import {
     ohlcSerializer,
     paginatedOhlcResponseSerializer,
 } from './serializers/ohlc';
+import WebSocket, { Data } from 'ws';
+import { EventEmitter } from 'events';
+import { StreamMessage, streamMessageSerializer, streamTickSerializer } from './serializers/websocket';
 
 const API_ENDPOINT = 'api.lemon.markets';
 
@@ -89,6 +94,150 @@ const checked_request = async <DRes, DReq extends BasePayload = null>(
         )
         .unwrap();
 };
+
+export class LemonMarketsStream extends EventEmitter {
+    private readonly _opQueue: string[];
+
+    private _socket: WebSocket;
+    private _socketReady: boolean;
+    private _ingestActive: boolean;
+
+    constructor(
+        //private _token: string, // authentication is not yet required
+    ) {
+        super();
+
+        this._socketReady = false;
+        this._ingestActive = false;
+
+        this._opQueue = [];
+
+        this._reconnect();
+    }
+
+    private _reconnect() {
+        if (this._socket) {
+            this._socket.terminate();
+        }
+
+        this._socketReady = false;
+
+        this._socket = new WebSocket(
+            `https://${API_ENDPOINT}/streams/v1/marketdata`,
+        );
+
+        this._socket.on(
+            'open',
+            () => {
+                this._socketReady = true;
+
+                this._tryIngest();
+            },
+        );
+
+        this._socket.on(
+            'close',
+            () => this._reconnect(),
+        );
+
+        this._socket.on(
+            'message',
+            (rawTick) =>
+                this._handleTick(rawTick),
+        );
+    }
+
+    private _tryIngest() {
+        if (
+            !this._socketReady
+            || this._ingestActive
+        ) {
+            return;
+        }
+
+        this._ingestActive = true;
+
+        try {
+            while (this._opQueue.length !== 0) {
+                this._socket
+                    .send(
+                        this._opQueue.shift(),
+                    );
+            }
+        } finally {
+            this._ingestActive = false;
+        }
+    }
+
+    private _prepareAction(
+        params: Omit<StreamMessage, 'action'>,
+        action: StreamMessage['action'],
+    ) {
+        const msg: StreamMessage = {
+            action,
+
+            ...params,
+        };
+
+        result_from_either(
+            streamMessageSerializer
+                .decode(msg),
+        )
+            .map(validMessage => {
+                this._opQueue.push(
+                    JSON.stringify(
+                        validMessage,
+                    ),
+                );
+
+                this._tryIngest();
+            });
+    }
+
+    public subscribe(param: Omit<StreamMessage, 'action'>) {
+        this._prepareAction(
+            param,
+            'subscribe' as const,
+        );
+    }
+
+    public unsubscribe(param: Omit<StreamMessage, 'action'>) {
+        this._prepareAction(
+            param,
+            'unsubscribe' as const,
+        );
+    }
+
+    private _handleTick(rawTick: Data) {
+        try {
+            const tickBuf = Buffer.from(rawTick);
+            const plainTick = tickBuf.toString();
+
+            const tick = JSON.parse(plainTick);
+
+            result_from_either(
+                streamTickSerializer
+                    .decode(tick),
+            )
+                .map(validTick => {
+                    this.emit(
+                        'tick',
+                        validTick,
+                    );
+                })
+                .unwrap();
+        } catch (err) {
+            this.emit(
+                'error',
+                {
+                    err,
+                    msg: 'malformed tick',
+                    data: rawTick,
+                },
+            );
+        }
+    }
+}
 
 export class LemonMarkets {
     constructor(

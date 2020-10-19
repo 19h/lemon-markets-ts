@@ -50,7 +50,7 @@ export const orderListRequestSerializer =
     buildRetCodec({
         side: buildOptionalReqCodec(orderSideSerializer),
         status: buildOptionalReqCodec(orderStateSerializer),
-        execution_type: buildOptionalReqCodec(orderExecutionTypeSerializer),
+        type: buildOptionalReqCodec(orderExecutionTypeSerializer),
 
         limit: optionalNumberCodec,
         offset: optionalNumberCodec,

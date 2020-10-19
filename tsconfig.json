@@ -12,6 +12,7 @@
     "allowJs": false,
     "moduleResolution": "node",
     "rootDir": ".",
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
